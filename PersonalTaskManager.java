@@ -1,5 +1,10 @@
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +22,8 @@ public class PersonalTaskManager {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private JSONArray loadTasksFromDb() {
-        try (FileReader reader = new FileReader(DB_FILE_PATH)) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(DB_FILE_PATH), StandardCharsets.UTF_8))) {
             Object obj = new JSONParser().parse(reader);
             if (obj instanceof JSONArray) {
                 return (JSONArray) obj;
@@ -29,8 +35,9 @@ public class PersonalTaskManager {
     }
 
     private void saveTasksToDb(JSONArray tasksData) {
-        try (FileWriter file = new FileWriter(DB_FILE_PATH)) {
-            file.write(tasksData.toJSONString());
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(new FileOutputStream(DB_FILE_PATH), StandardCharsets.UTF_8))) {
+            writer.write(tasksData.toJSONString());
         } catch (IOException e) {
             System.err.println("Lỗi ghi file: " + e.getMessage());
         }
