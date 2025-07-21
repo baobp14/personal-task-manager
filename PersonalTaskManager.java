@@ -30,7 +30,7 @@ public class PersonalTaskManager {
                 return (JSONArray) obj;
             }
         } catch (IOException | ParseException e) {
-            System.err.println("Lỗi đọc file: " + e.getMessage());
+            System.err.println("Loi doc file: " + e.getMessage());
         }
         return new JSONArray();
     }
@@ -40,12 +40,12 @@ public class PersonalTaskManager {
                 new OutputStreamWriter(new FileOutputStream(DB_FILE_PATH), StandardCharsets.UTF_8))) {
             writer.write(tasksData.toJSONString());
         } catch (IOException e) {
-            System.err.println("Lỗi ghi file: " + e.getMessage());
+            System.err.println("Loi ghi file: " + e.getMessage());
         }
     }
 
     private boolean isValidPriority(String priority) {
-        return priority.equals("Thấp") || priority.equals("Trung bình") || priority.equals("Cao");
+        return priority.equals("Thap") || priority.equals("Trung binh") || priority.equals("Cao");
     }
 
     private boolean isDuplicateTask(JSONArray tasks, String title, String dueDate) {
@@ -61,12 +61,12 @@ public class PersonalTaskManager {
 
     public JSONObject addNewTask(String title, String description, String dueDateStr, String priority) {
         if (title == null || title.trim().isEmpty()) {
-            System.out.println("Lỗi: Tiêu đề không được để trống.");
+            System.out.println("Loi: Tieu de khong duoc de trong.");
             return null;
         }
 
         if (dueDateStr == null || dueDateStr.trim().isEmpty()) {
-            System.out.println("Lỗi: Ngày đến hạn không được để trống.");
+            System.out.println("Loi: Ngay den han khong duoc de trong.");
             return null;
         }
 
@@ -74,18 +74,18 @@ public class PersonalTaskManager {
         try {
             dueDate = LocalDate.parse(dueDateStr, DATE_FORMATTER);
         } catch (DateTimeParseException e) {
-            System.out.println("Lỗi: Ngày đến hạn không hợp lệ (YYYY-MM-DD).");
+            System.out.println("Loi: Ngay den han khong hop le (YYYY-MM-DD).");
             return null;
         }
 
         if (!isValidPriority(priority)) {
-            System.out.println("Lỗi: Mức độ ưu tiên không hợp lệ (Thấp, Trung bình, Cao).");
+            System.out.println("Loi: Muc do uu tien khong hop le (Thap, Trung binh, Cao).");
             return null;
         }
 
         JSONArray tasks = loadTasksFromDb();
         if (isDuplicateTask(tasks, title, dueDate.format(DATE_FORMATTER))) {
-            System.out.println("Lỗi: Nhiệm vụ đã tồn tại.");
+            System.out.println("Loi: Nhiem vu da ton tai.");
             return null;
         }
 
@@ -95,22 +95,22 @@ public class PersonalTaskManager {
         newTask.put("description", description);
         newTask.put("due_date", dueDate.format(DATE_FORMATTER));
         newTask.put("priority", priority);
-        newTask.put("status", "Chưa hoàn thành");
+        newTask.put("status", "Chua hoan thanh");
 
         tasks.add(newTask);
         saveTasksToDb(tasks);
 
-        System.out.println("Đã thêm nhiệm vụ thành công.");
+        System.out.println("Da them nhiem vu thanh cong.");
         return newTask;
     }
 
     public void viewTasks() {
         JSONArray tasks = loadTasksFromDb();
         if (tasks.isEmpty()) {
-            System.out.println("Danh sách nhiệm vụ trống.");
+            System.out.println("Danh sach nhiem vu trong.");
             return;
         }
-        System.out.println("Danh sách các nhiệm vụ:");
+        System.out.println("Danh sach cac nhiem vu:");
         for (Object obj : tasks) {
             JSONObject task = (JSONObject) obj;
             System.out.println("- " + task.get("title") + " | " + task.get("due_date") +
@@ -135,7 +135,7 @@ public class PersonalTaskManager {
                         LocalDate.parse(newDueDateStr, DATE_FORMATTER);
                         task.put("due_date", newDueDateStr);
                     } catch (DateTimeParseException e) {
-                        System.out.println("Lỗi: Ngày đến hạn không hợp lệ.");
+                        System.out.println("Loi: Ngay den han khong hop le.");
                         return;
                     }
                 }
@@ -148,9 +148,9 @@ public class PersonalTaskManager {
         }
         if (found) {
             saveTasksToDb(tasks);
-            System.out.println("Cập nhật nhiệm vụ thành công.");
+            System.out.println("Cap nhat nhiem vu thanh cong.");
         } else {
-            System.out.println("Không tìm thấy nhiệm vụ với ID đã nhập.");
+            System.out.println("Khong tim thay nhiem vu voi ID da nhap.");
         }
     }
 
@@ -159,9 +159,9 @@ public class PersonalTaskManager {
         boolean removed = tasks.removeIf(obj -> ((JSONObject) obj).get("id").toString().equals(taskId));
         if (removed) {
             saveTasksToDb(tasks);
-            System.out.println("Xóa nhiệm vụ thành công.");
+            System.out.println("Xoa nhiem vu thanh cong.");
         } else {
-            System.out.println("Không tìm thấy nhiệm vụ để xóa.");
+            System.out.println("Khong tim thay nhiem vu de xoa.");
         }
     }
 
@@ -170,24 +170,24 @@ public class PersonalTaskManager {
         Scanner scanner = new Scanner(System.in, "UTF-8");
 
         while (true) {
-            System.out.println("\n----- QUẢN LÝ NHIỆM VỤ -----");
-            System.out.println("1. Thêm nhiệm vụ");
-            System.out.println("2. Xem danh sách nhiệm vụ");
-            System.out.println("3. Chỉnh sửa nhiệm vụ");
-            System.out.println("4. Xóa nhiệm vụ");
-            System.out.println("5. Thoát");
-            System.out.print("Chọn chức năng: ");
+            System.out.println("\n----- QUAN LY NHIEM VU -----");
+            System.out.println("1. Them nhiem vu");
+            System.out.println("2. Xem danh sach nhiem vu");
+            System.out.println("3. Chinh sua nhiem vu");
+            System.out.println("4. Xoa nhiem vu");
+            System.out.println("5. Thoat");
+            System.out.print("Chon chuc nang: ");
             String choice = scanner.nextLine();
 
             switch (choice) {
                 case "1":
-                    System.out.print("Tiêu đề: ");
+                    System.out.print("Tieu de: ");
                     String title = scanner.nextLine();
-                    System.out.print("Mô tả: ");
+                    System.out.print("Mo ta: ");
                     String desc = scanner.nextLine();
-                    System.out.print("Ngày đến hạn (YYYY-MM-DD): ");
+                    System.out.print("Ngay den han (YYYY-MM-DD): ");
                     String date = scanner.nextLine();
-                    System.out.print("Mức độ ưu tiên (Thấp/Trung bình/Cao): ");
+                    System.out.print("Muc do uu tien (Thap/Trung binh/Cao): ");
                     String priority = scanner.nextLine();
                     manager.addNewTask(title, desc, date, priority);
                     break;
@@ -195,28 +195,28 @@ public class PersonalTaskManager {
                     manager.viewTasks();
                     break;
                 case "3":
-                    System.out.print("Nhập ID nhiệm vụ cần sửa: ");
+                    System.out.print("Nhap ID nhiem vu can sua: ");
                     String editId = scanner.nextLine();
-                    System.out.print("Tiêu đề mới (bỏ trống nếu không đổi): ");
+                    System.out.print("Tieu de moi (bo trong neu khong doi): ");
                     String newTitle = scanner.nextLine();
-                    System.out.print("Mô tả mới (bỏ trống nếu không đổi): ");
+                    System.out.print("Mo ta moi (bo trong neu khong doi): ");
                     String newDesc = scanner.nextLine();
-                    System.out.print("Ngày đến hạn mới (YYYY-MM-DD hoặc bỏ trống): ");
+                    System.out.print("Ngay den han moi (YYYY-MM-DD hoac bo trong): ");
                     String newDate = scanner.nextLine();
-                    System.out.print("Ưu tiên mới (Thấp/Trung bình/Cao hoặc bỏ trống): ");
+                    System.out.print("Uu tien moi (Thap/Trung binh/Cao hoac bo trong): ");
                     String newPriority = scanner.nextLine();
                     manager.editTask(editId, newTitle, newDesc, newDate, newPriority);
                     break;
                 case "4":
-                    System.out.print("Nhập ID nhiệm vụ cần xóa: ");
+                    System.out.print("Nhap ID nhiem vu can xoa: ");
                     String deleteId = scanner.nextLine();
                     manager.deleteTask(deleteId);
                     break;
                 case "5":
-                    System.out.println("Thoát chương trình.");
+                    System.out.println("Thoat chuong trinh.");
                     return;
                 default:
-                    System.out.println("Lựa chọn không hợp lệ.");
+                    System.out.println("Lua chon khong hop le.");
             }
         }
     }

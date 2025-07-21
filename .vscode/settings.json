@@ -2,8 +2,6 @@
     "java.project.referencedLibraries": [
         "libs/json-simple-1.1.1.jar"
         
-    ],
-    
-
+    ]
 
 }
